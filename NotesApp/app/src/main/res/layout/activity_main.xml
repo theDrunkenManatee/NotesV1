@@ -25,13 +25,6 @@
                 android:layout_weight="1"
                 android:text="New Folder" />
 
-            <Button
-                android:id="@+id/renameFolderButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Rename Folder" />
-
         </LinearLayout>
 
         <LinearLayout
@@ -99,6 +92,52 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Save Note" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/makeFolder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/makeFolderButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Make Folder" />
+
+            <EditText
+                android:id="@+id/MFname"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:hint="name"
+                android:inputType="textPersonName" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/renameFolder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/renameFolderButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="rename Folder" />
+
+            <EditText
+                android:id="@+id/RFnewName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:hint="newName"
+                android:inputType="textPersonName" />
         </LinearLayout>
 
         <android.support.v4.widget.NestedScrollView

@@ -24,64 +24,124 @@ public class NoteAppHandler {
         return statusOut;
     }
 
-    //TODO
-    public String makeNote(String newNoteName, boolean saveCurrentNote) {
-        String statusOut = "note Created";
+    public String makeNote(String name, String contentIn, boolean saveCurrentNote) {
+        String statusOut = "Note created";
+
+        Note newNote = new Note(name);
+
+        boolean nameMatch = false;
+        for(Note note : selectedFolder.getNoteArray()) {
+            if(note.getName().equals(name)) {
+                nameMatch = true;
+            }
+        }
+        if(!nameMatch) {
+            selectedFolder.addNote(newNote);
+            statusOut = "Note created and named " + name;
+        } else {
+            statusOut = "Name already used, note not saved";
+        }
+
         if(saveCurrentNote) {
-            saveNote();
+            saveNote(contentIn);
             statusOut = statusOut = ", "+selectedNote.getName()+" saved.";
         } else {
             statusOut = statusOut = ", "+selectedNote.getName()+" not saved.";
         }
-        Note newNote = new Note(newNoteName);
-        selectedFolder.addNote(newNote);
-        selectedNote = newNote;
+        if(!nameMatch) {
+            selectedNote=newNote;
+        }
         return statusOut;
     }
 
-    //TODO
-    public String renameNote() {
-        String statusOut = "note Renamed";
-
+    public String renameNote(String newName) {
+        String statusOut = "Note renamed";
+        if(newName.length()>0) {
+            String oldName = selectedNote.getName();
+            boolean nameMatch = false;
+            for(Note note : selectedFolder.getNoteArray()) {
+                if(note.getName().equals(newName)) {
+                    nameMatch = true;
+                }
+            }
+            if(!nameMatch) {
+                selectedNote.setName(newName);
+                statusOut = statusOut + ", name changed from " + oldName + " to " + newName + ".";
+            } else {
+                statusOut = "Another note is already named "+newName+", current note not renamed.";
+            }
+        } else {
+            statusOut = "No new name given, name unchanged.";
+        }
         return statusOut;
     }
 
-    //TODO
-    public String saveNote() {
-        String statusOut = "note Saved";
-
+    public String saveNote(String contentIn) {
+        String statusOut = "Note saved.";
+        testNote.setContent(contentIn);
         return statusOut;
     }
 
-    //TODO
-    public ArrayList<String> searchInFolderFor(String term) {
-        ArrayList<String> out =  new ArrayList<String>();
-
+    public ArrayList<Note> searchInFolderFor(String term) {
+        ArrayList<Note> out =  new ArrayList<Note>();
+        for(Note note : selectedFolder.getNoteArray()) {
+            if(note.getName().contains(term)) {
+                out.add(note);
+            } else if(note.getContent().contains(term)) {
+                out.add(note);
+            }
+        }
         return out;
     }
 
-    //TODO
     public Note getNoteFromFolder(String name) {
         Note out =  null;
-
-
+        if(selectedFolder.getNote(name) != null) {
+            for(Note note : selectedFolder.getNoteArray()) {
+                if(note.getName().equals(name)) {
+                    out = note;
+                }
+            }
+        }
         return out;
     }
 
-    //TODO: This
-    public String makeFolder() {
-        String statusOut = "Folder Created";
-
+    public String makeFolder(String name) {
+        String statusOut = "Folder created";
+        boolean nameMatch = false;
+        for(Folder folder : folders) {
+            if (folder.getFolderName().equals(name)) {
+                nameMatch = true;
+            }
+        }
+        if(!nameMatch) {
+            Folder newFolder = new Folder(name);
+            folders.add(newFolder);
+            statusOut = statusOut + ", named " + name + ".";
+        } else {
+            statusOut = "Another folder is already named" + name + ", no new folder created.";
+        }
         return statusOut;
     }
-    //TODO: This
-    public String renameFolder() {
+
+    public String renameFolder(String newName) {
         String statusOut = "Folder renamed";
-
+        boolean nameMatch = false;
+        for(Folder folder : folders) {
+            if (folder.getFolderName().equals(newName)) {
+                nameMatch = true;
+            }
+        }
+        if(!nameMatch) {
+            selectedFolder.setFolderName(newName);
+            statusOut = statusOut + " to " +newName + ".";
+        } else {
+            statusOut = "Name already found, folder not renamed.";
+        }
         return statusOut;
-
     }
 
+    //Getter methods
     private ArrayList<String> getFolderNames() {
         ArrayList<String> out =  new ArrayList<String>();
         for(Folder folder: folders) {

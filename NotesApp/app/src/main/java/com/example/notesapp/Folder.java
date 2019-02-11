@@ -23,8 +23,6 @@ public class Folder {
         }
         if(matchFound) {
             return foundNote;
-        } else {
-            System.out.println("ERROR in getNote("+noteName+"), matching note not found");
         }
         return null;
     }
@@ -45,12 +43,25 @@ public class Folder {
         }
     }
 
+    public void setFolderName(String newName) {
+        folderName = newName;
+    }
+
+    @Override
     public String toString() {
         String out = folderName;
         for(Note note: noteArray) {
             out = out +"\n-" + note.getName();
         }
         return out;
+    }
+    @Override
+    public int hashCode() {
+        return toString().hashCode();
+    }
+    @Override
+    public boolean equals(Object other) {
+        return this.toString().equals(other.toString());
     }
 
     //Getter methods
