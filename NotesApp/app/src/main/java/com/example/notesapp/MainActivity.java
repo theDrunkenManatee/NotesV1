@@ -3,89 +3,193 @@ package com.example.notesapp;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Spinner;
+import android.widget.Switch;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements RenameNoteDialog.noteDialogListener, RenameFolderDialog.folderDialogListener, NewNoteDialog.newNoteDialogListener, NewFolderDialog.newFolderDialogListener {
 
-    private Button newFolderButton;
-    private Button renameFolderButton;
-    private Button newNoteButton;
+    private Button makeNoteButton;
+    private Switch saveCurrentNote;
+
+
     private Button saveNoteButton;
-    private Button loadNoteButton;
-    private NoteAppHandler handler;
 
-    private Spinner folderSpinner;
-    private ArrayAdapter<String> folderAdapter;
-    private Spinner noteSpinner;
-    private ArrayAdapter<String> noteAdapter;
+    private Button searchFolderButton;
+    private EditText folderSearchTerm;
 
-    private EditText keywordSearchText;
+    private Button openNoteButton;
+    private EditText openNoteName;
+
+    private Button makeFolderButton;
+
+
+    private TextView folderName;
+    private TextView noteName;
     private EditText noteText;
 
-
+    private NoteAppHandler handler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Folder testFolder =  new Folder("testFolder");
-        Note testNote1 = new Note("Note1");
-        Note testNote2 = new Note("Note2");
-        Note testNote3 = new Note("Note3");
-        testFolder.addNote(testNote1);
-        testFolder.addNote(testNote2);
-        testFolder.addNote(testNote3);
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         handler = new NoteAppHandler();
-
-        newFolderButton = (Button) findViewById(R.id.newFolderButton);
-        renameFolderButton = (Button) findViewById(R.id.renameFolderButton);
-        newNoteButton = (Button) findViewById(R.id.newNoteButton);
-        saveNoteButton = (Button) findViewById(R.id.saveNoteButton);
-        loadNoteButton = (Button) findViewById(R.id.loadNoteButton);
-
-        noteText = (EditText) findViewById(R.id.noteText);
+        attachButtons();
         setNoteButtons();
+        updateScreen();
+    }
 
-        noteText.setText(testFolder.toString());
+    private void attachButtons() {
+        makeNoteButton = (Button) findViewById(R.id.makeNoteButton);
+        saveCurrentNote = (Switch) findViewById(R.id.saveCurrentNote);
 
-        handler.saveTestNote("SampleNote","");
+        saveNoteButton = (Button) findViewById(R.id.saveNoteButton);
+
+        searchFolderButton = (Button) findViewById(R.id.searchFolderButton);
+        folderSearchTerm = (EditText) findViewById(R.id.searchTerm);
+
+        openNoteButton = (Button) findViewById(R.id.openNoteButton);
+        openNoteName = (EditText) findViewById(R.id.openNoteName);
+
+        makeFolderButton = (Button) findViewById(R.id.makeFolderButton);
+
+        folderName = (TextView) findViewById(R.id.folderName);
+        noteName = (TextView) findViewById(R.id.noteName);
+        noteText = (EditText) findViewById(R.id.noteText);
     }
 
     private void setNoteButtons() {
-        newNoteButton.setOnClickListener(new View.OnClickListener() {
+        makeNoteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                noteText.setText("");
+                makeNote();
             }
         });
+
         saveNoteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                handler.saveTestNote("SampleNote",noteText.getText().toString());
+                String status = handler.saveNote(noteText.getText().toString());
+                updateScreen();
+                Toast.makeText(getApplicationContext(), status, Toast.LENGTH_SHORT).show();
             }
         });
-        loadNoteButton.setOnClickListener(new View.OnClickListener() {
+        searchFolderButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                noteText.setText(handler.getTestNote().getContent());
+                String status = "";
+                ArrayList<Note> out = handler.searchInFolderFor(folderSearchTerm.getText().toString());
+                status = folderSearchTerm.getText().toString() + " found in the following:";
+                for(Note note : out) {
+                    status = status + "\n-" +note.getName();
+                }
+                updateScreen();
+                Toast.makeText(getApplicationContext(), status, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        openNoteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String status = handler.openNote(openNoteName.getText().toString(), noteText.getText().toString(), saveCurrentNote.isChecked());
+                updateScreen();
+                Toast.makeText(getApplicationContext(), status, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        noteName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                renameNote();
+            }
+        });
+
+        folderName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                renameFolder();
+            }
+        });
+
+        makeFolderButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                makeFolder();
             }
         });
     }
 
-    private void setSpinners(ArrayList<Folder> folderArrayList, ArrayList<Folder> noteArrayList) {
-        folderSpinner = (Spinner) findViewById(R.id.folderList);
-        //folderAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, folderArrayList);
-        folderSpinner.setAdapter(folderAdapter);
+    private void makeNote() {
+        makeNewNoteDialog();
+    }
+    private void makeFolder() {
+        makeNewFolderDialog();
+    }
+    private void renameNote() {
+        makeRenameNoteDialog();
+    }
+    private void renameFolder() {
+        makeRenameFolderDialog();
+    }
 
-        noteSpinner = (Spinner) findViewById(R.id.noteList);
-        //noteAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, noteArrayList);
-        noteSpinner.setAdapter(noteAdapter);
+    @Override
+    public void applyRenameNoteText(String newName) {
+        if(newName!="") {
+            String status = handler.renameNote(newName);
+            Toast.makeText(getApplicationContext(), status, Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(getApplicationContext(), "No new name given.", Toast.LENGTH_SHORT).show();
+        }
+        updateScreen();
+    }
+    @Override
+    public void applyRenameFolderText(String newName) {
+        if(newName!="") {
+            String status = handler.renameFolder(newName);
+            Toast.makeText(getApplicationContext(), status, Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(getApplicationContext(), "No new name given.", Toast.LENGTH_SHORT).show();
+        }
+        updateScreen();
+    }
+    @Override
+    public void applyNewNoteText(String newName) {
+        String status = handler.makeNote(newName, noteText.getText().toString(), saveCurrentNote.isChecked());
+        updateScreen();
+        Toast.makeText(getApplicationContext(), status, Toast.LENGTH_SHORT).show();
+    }
+    @Override
+    public void applyNewFolderText(String newName) {
+        String status = handler.makeFolder(newName);
+        updateScreen();
+        Toast.makeText(getApplicationContext(), status, Toast.LENGTH_SHORT).show();
+    }
+
+    public void makeRenameNoteDialog() {
+        RenameNoteDialog exampleDialog = new RenameNoteDialog();
+        exampleDialog.show(getSupportFragmentManager(), "example dialog");
+    }
+    public void makeNewFolderDialog() {
+        NewFolderDialog exampleDialog = new NewFolderDialog();
+        exampleDialog.show(getSupportFragmentManager(), "example dialog");
+    }
+    public void makeNewNoteDialog() {
+        NewNoteDialog exampleDialog = new NewNoteDialog();
+        exampleDialog.show(getSupportFragmentManager(), "example dialog");
+    }
+    public void makeRenameFolderDialog() {
+        RenameFolderDialog exampleDialog = new RenameFolderDialog();
+        exampleDialog.show(getSupportFragmentManager(), "example dialog");
+    }
+
+    private void updateScreen() {
+        folderName.setText(handler.getSelectedFolder().getFolderName());
+        noteName.setText(handler.getSelectedNote().getName());
+        noteText.setText(handler.getSelectedNote().getContent());
     }
 }

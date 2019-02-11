@@ -5,30 +5,21 @@ import java.util.ArrayList;
 public class NoteAppHandler {
     private ArrayList<Folder> folders;
     private Folder selectedFolder;
-    private Note testNote;
     private Note selectedNote;
 
     public NoteAppHandler() {
         folders = new ArrayList<Folder>();
-        selectedFolder = new Folder("");
+        selectedFolder = new Folder("newFolder");
+        selectedNote = new Note("sampleNote");
+        selectedNote.setContent("");
+        selectedFolder.addNote(selectedNote);
         folders.add(selectedFolder);
-        testNote = new Note("sampleNote");
-    }
 
-    public String saveTestNote(String name, String content) {
-        String statusOut = "Note saved";
-
-        testNote.setName(name);
-        testNote.setContent(content);
-
-        return statusOut;
     }
 
     public String makeNote(String name, String contentIn, boolean saveCurrentNote) {
         String statusOut = "Note created";
-
         Note newNote = new Note(name);
-
         boolean nameMatch = false;
         for(Note note : selectedFolder.getNoteArray()) {
             if(note.getName().equals(name)) {
@@ -44,9 +35,9 @@ public class NoteAppHandler {
 
         if(saveCurrentNote) {
             saveNote(contentIn);
-            statusOut = statusOut = ", "+selectedNote.getName()+" saved.";
+            statusOut = statusOut + ", "+selectedNote.getName()+" saved.";
         } else {
-            statusOut = statusOut = ", "+selectedNote.getName()+" not saved.";
+            statusOut = statusOut + ", "+selectedNote.getName()+" not saved.";
         }
         if(!nameMatch) {
             selectedNote=newNote;
@@ -68,7 +59,7 @@ public class NoteAppHandler {
                 selectedNote.setName(newName);
                 statusOut = statusOut + ", name changed from " + oldName + " to " + newName + ".";
             } else {
-                statusOut = "Another note is already named "+newName+", current note not renamed.";
+                statusOut = "Another note is already named "+newName+", "+ selectedNote.getName() + " not renamed.";
             }
         } else {
             statusOut = "No new name given, name unchanged.";
@@ -77,8 +68,26 @@ public class NoteAppHandler {
     }
 
     public String saveNote(String contentIn) {
-        String statusOut = "Note saved.";
-        testNote.setContent(contentIn);
+        String statusOut = selectedNote.getName() + " saved.";
+        selectedNote.setContent(contentIn);
+        selectedFolder.addNote(selectedNote);
+        return statusOut;
+    }
+
+    public String openNote(String name, String contentIn, boolean saveCurrentNote) {
+        String statusOut;
+        if(getNoteFromFolder(name)!=null) {
+            if(saveCurrentNote) {
+                saveNote(contentIn);
+                statusOut = ", saved " + selectedNote.getName();
+            } else {
+                statusOut = ", didn't save " + selectedNote.getName();
+            }
+            selectedNote = getNoteFromFolder(name);
+            statusOut = "Opened " + selectedNote.getName() + statusOut;
+        } else {
+            statusOut = "Note not found";
+        }
         return statusOut;
     }
 
@@ -151,6 +160,5 @@ public class NoteAppHandler {
     }
     public ArrayList<Folder> getFolders() { return folders; }
     public Folder getSelectedFolder() { return selectedFolder;}
-    public Note getTestNote() { return testNote;}
     public Note getSelectedNote() { return selectedNote;}
 }

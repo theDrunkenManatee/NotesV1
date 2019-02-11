@@ -6,6 +6,7 @@ public class Note {
 
     public Note(String noteName) {
         name=noteName;
+        content = "";
     }
 
     public void setName(String nameIn) {
