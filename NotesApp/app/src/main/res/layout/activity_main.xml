@@ -27,7 +27,6 @@
                     android:id="@+id/noteName"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
                     android:textAppearance="@style/TextAppearance.AppCompat.Headline"
                     tools:text="noteName" />
 
@@ -35,7 +34,8 @@
                     android:id="@+id/makeNoteButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="New note" />
+                    android:text="New Note"
+                    tools:text="New Note" />
             </LinearLayout>
 
             <LinearLayout
@@ -48,7 +48,6 @@
                     android:id="@+id/folderName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:textAppearance="@style/TextAppearance.AppCompat.Headline"
                     tools:text="folderName" />
 
@@ -127,13 +126,6 @@
                 android:layout_weight="1"
                 android:text="Save Note" />
 
-            <Switch
-                android:id="@+id/saveCurrentNote"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="save current on closing?" />
-
         </LinearLayout>
 
         <LinearLayout
@@ -157,7 +149,7 @@
                 <EditText
                     android:id="@+id/noteText"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:ems="10"
                     android:inputType="textMultiLine" />
 

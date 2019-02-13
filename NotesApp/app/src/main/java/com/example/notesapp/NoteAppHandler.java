@@ -17,30 +17,17 @@ public class NoteAppHandler {
 
     }
 
-    public String makeNote(String name, String contentIn, boolean saveCurrentNote) {
+    public String makeNote(String name, String contentIn) {
         String statusOut = "Note created";
-        Note newNote = new Note(name);
-        boolean nameMatch = false;
-        for(Note note : selectedFolder.getNoteArray()) {
-            if(note.getName().equals(name)) {
-                nameMatch = true;
-            }
-        }
+        boolean nameMatch = containsName(name, selectedFolder);
         if(!nameMatch) {
+            Note newNote = new Note(name);
             selectedFolder.addNote(newNote);
             statusOut = "Note created and named " + name;
-        } else {
-            statusOut = "Name already used, note not saved";
-        }
-
-        if(saveCurrentNote) {
-            saveNote(contentIn);
+            openNote(name, contentIn);
             statusOut = statusOut + ", "+selectedNote.getName()+" saved.";
         } else {
-            statusOut = statusOut + ", "+selectedNote.getName()+" not saved.";
-        }
-        if(!nameMatch) {
-            selectedNote=newNote;
+            statusOut = "Name already used, note not saved";
         }
         return statusOut;
     }
@@ -74,15 +61,11 @@ public class NoteAppHandler {
         return statusOut;
     }
 
-    public String openNote(String name, String contentIn, boolean saveCurrentNote) {
+    public String openNote(String name, String contentIn) {
         String statusOut;
         if(getNoteFromFolder(name)!=null) {
-            if(saveCurrentNote) {
-                saveNote(contentIn);
-                statusOut = ", saved " + selectedNote.getName();
-            } else {
-                statusOut = ", didn't save " + selectedNote.getName();
-            }
+            saveNote(contentIn);
+            statusOut = ", saved " + selectedNote.getName();
             selectedNote = getNoteFromFolder(name);
             statusOut = "Opened " + selectedNote.getName() + statusOut;
         } else {
@@ -148,6 +131,16 @@ public class NoteAppHandler {
             statusOut = "Name already found, folder not renamed.";
         }
         return statusOut;
+    }
+
+    private boolean containsName(String name, Folder folder) {
+        boolean out = false;
+        for(Note test : folder.getNoteArray()) {
+            if(test.getName().equals(name)) {
+                out = true;
+            }
+        }
+        return out;
     }
 
     //Getter methods

@@ -14,7 +14,6 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity implements RenameNoteDialog.noteDialogListener, RenameFolderDialog.folderDialogListener, NewNoteDialog.newNoteDialogListener, NewFolderDialog.newFolderDialogListener {
 
     private Button makeNoteButton;
-    private Switch saveCurrentNote;
 
 
     private Button saveNoteButton;
@@ -46,7 +45,6 @@ public class MainActivity extends AppCompatActivity implements RenameNoteDialog.
 
     private void attachButtons() {
         makeNoteButton = (Button) findViewById(R.id.makeNoteButton);
-        saveCurrentNote = (Switch) findViewById(R.id.saveCurrentNote);
 
         saveNoteButton = (Button) findViewById(R.id.saveNoteButton);
 
@@ -96,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements RenameNoteDialog.
         openNoteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String status = handler.openNote(openNoteName.getText().toString(), noteText.getText().toString(), saveCurrentNote.isChecked());
+                String status = handler.openNote(openNoteName.getText().toString(), noteText.getText().toString());
                 updateScreen();
                 Toast.makeText(getApplicationContext(), status, Toast.LENGTH_SHORT).show();
             }
@@ -141,6 +139,7 @@ public class MainActivity extends AppCompatActivity implements RenameNoteDialog.
     public void applyRenameNoteText(String newName) {
         if(newName!="") {
             String status = handler.renameNote(newName);
+            handler.saveNote(noteText.getText().toString());
             Toast.makeText(getApplicationContext(), status, Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(getApplicationContext(), "No new name given.", Toast.LENGTH_SHORT).show();
@@ -151,6 +150,7 @@ public class MainActivity extends AppCompatActivity implements RenameNoteDialog.
     public void applyRenameFolderText(String newName) {
         if(newName!="") {
             String status = handler.renameFolder(newName);
+            handler.saveNote(noteText.getText().toString());
             Toast.makeText(getApplicationContext(), status, Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(getApplicationContext(), "No new name given.", Toast.LENGTH_SHORT).show();
@@ -159,7 +159,7 @@ public class MainActivity extends AppCompatActivity implements RenameNoteDialog.
     }
     @Override
     public void applyNewNoteText(String newName) {
-        String status = handler.makeNote(newName, noteText.getText().toString(), saveCurrentNote.isChecked());
+        String status = handler.makeNote(newName, noteText.getText().toString());
         updateScreen();
         Toast.makeText(getApplicationContext(), status, Toast.LENGTH_SHORT).show();
     }

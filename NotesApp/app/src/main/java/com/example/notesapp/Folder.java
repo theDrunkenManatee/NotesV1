@@ -28,7 +28,6 @@ public class Folder {
     }
 
     public boolean addNote(Note noteToAdd) {
-        System.out.println("addNote("+noteToAdd+")");
         boolean matchFound = false;
         for(Note note: noteArray) {
             if(note.getName().equals(noteToAdd.getName())) {
@@ -36,7 +35,6 @@ public class Folder {
             }
         }
         if(!matchFound) {
-            System.out.println("no match, returning "+noteToAdd);
             return noteArray.add(noteToAdd);
         } else {
             return false;
