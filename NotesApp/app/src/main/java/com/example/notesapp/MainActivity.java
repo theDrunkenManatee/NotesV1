@@ -72,11 +72,10 @@ public class MainActivity extends AppCompatActivity implements RenameNoteDialog.
         saveNoteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String status = handler.saveNote(noteText.getText().toString());
-                updateScreen();
-                Toast.makeText(getApplicationContext(), status, Toast.LENGTH_SHORT).show();
+                saveNote();
             }
         });
+
         searchFolderButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -122,8 +121,15 @@ public class MainActivity extends AppCompatActivity implements RenameNoteDialog.
         });
     }
 
+
+
     private void makeNote() {
         makeNewNoteDialog();
+    }
+    private void saveNote() {
+        String status = handler.saveNote(noteText.getText().toString());
+        updateScreen();
+        Toast.makeText(getApplicationContext(), status, Toast.LENGTH_SHORT).show();
     }
     private void makeFolder() {
         makeNewFolderDialog();
@@ -170,6 +176,8 @@ public class MainActivity extends AppCompatActivity implements RenameNoteDialog.
         Toast.makeText(getApplicationContext(), status, Toast.LENGTH_SHORT).show();
     }
 
+
+    //Dialog Generation Methods
     public void makeRenameNoteDialog() {
         RenameNoteDialog exampleDialog = new RenameNoteDialog();
         exampleDialog.show(getSupportFragmentManager(), "example dialog");
@@ -187,6 +195,7 @@ public class MainActivity extends AppCompatActivity implements RenameNoteDialog.
         exampleDialog.show(getSupportFragmentManager(), "example dialog");
     }
 
+    private void updateHandler() {handler.setCurrentContent(noteText.getText().toString()); }
     private void updateScreen() {
         folderName.setText(handler.getSelectedFolder().getFolderName());
         noteName.setText(handler.getSelectedNote().getName());

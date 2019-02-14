@@ -6,12 +6,14 @@ public class NoteAppHandler {
     private ArrayList<Folder> folders;
     private Folder selectedFolder;
     private Note selectedNote;
+    private String currentContent;
 
-    public NoteAppHandler() {
+    public NoteAppHandler()     {
         folders = new ArrayList<Folder>();
         selectedFolder = new Folder("newFolder");
         selectedNote = new Note("sampleNote");
-        selectedNote.setContent("");
+        currentContent = "";
+        selectedNote.setContent(currentContent);
         selectedFolder.addNote(selectedNote);
         folders.add(selectedFolder);
 
@@ -133,6 +135,13 @@ public class NoteAppHandler {
         return statusOut;
     }
 
+    //TODO
+    public String chooseFolder(String name) {
+        String statusOut = "Folder selected";
+
+        return statusOut;
+    }
+
     private boolean containsName(String name, Folder folder) {
         boolean out = false;
         for(Note test : folder.getNoteArray()) {
@@ -154,4 +163,6 @@ public class NoteAppHandler {
     public ArrayList<Folder> getFolders() { return folders; }
     public Folder getSelectedFolder() { return selectedFolder;}
     public Note getSelectedNote() { return selectedNote;}
+    public String getCurrentContent() {return currentContent;}
+    public void setCurrentContent(String in) {currentContent = in;}
 }
