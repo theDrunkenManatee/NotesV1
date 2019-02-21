@@ -122,25 +122,35 @@ public class MainActivity extends AppCompatActivity implements RenameNoteDialog.
     }
 
 
-
+    //Button Response Methods
     private void makeNote() {
+        updateHandler();
         makeNewNoteDialog();
     }
     private void saveNote() {
+        updateHandler();
         String status = handler.saveNote(noteText.getText().toString());
         updateScreen();
         Toast.makeText(getApplicationContext(), status, Toast.LENGTH_SHORT).show();
     }
     private void makeFolder() {
+        updateHandler();
         makeNewFolderDialog();
     }
     private void renameNote() {
+        updateHandler();
         makeRenameNoteDialog();
     }
     private void renameFolder() {
+        updateHandler();
         makeRenameFolderDialog();
     }
+    //TODO
+    private void openNote() {
+        updateHandler();
+    }
 
+    //Dialog Method Implementations
     @Override
     public void applyRenameNoteText(String newName) {
         if(newName!="") {
@@ -195,6 +205,7 @@ public class MainActivity extends AppCompatActivity implements RenameNoteDialog.
         exampleDialog.show(getSupportFragmentManager(), "example dialog");
     }
 
+    //Update Methods
     private void updateHandler() {handler.setCurrentContent(noteText.getText().toString()); }
     private void updateScreen() {
         folderName.setText(handler.getSelectedFolder().getFolderName());

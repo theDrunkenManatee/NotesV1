@@ -136,11 +136,12 @@ public class NoteAppHandler {
     }
 
     //TODO
-    public String chooseFolder(String name) {
+    public String goToFolder(String name) {
         String statusOut = "Folder selected";
 
         return statusOut;
     }
+
 
     private boolean containsName(String name, Folder folder) {
         boolean out = false;
@@ -164,5 +165,6 @@ public class NoteAppHandler {
     public Folder getSelectedFolder() { return selectedFolder;}
     public Note getSelectedNote() { return selectedNote;}
     public String getCurrentContent() {return currentContent;}
+
     public void setCurrentContent(String in) {currentContent = in;}
 }
